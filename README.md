@@ -28,8 +28,9 @@ The data is sourced from the following link: [samples.json](https://2u-data-curr
 - All charts are created using `Plotly.js`.
 
 # References
-`Hulcr, J. et al. (2012)` A Jungle in There: Bacteria in Belly Buttons are Highly Diverse, but Predictable. Retrieved from: 
-  - [Paper Link](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0047712);
+`Hulcr, J. et al. (2012)` A Jungle in There: Bacteria in Belly Buttons are Highly Diverse, but Predictable. 
+Retrieved from: 
+  - [Original Paper](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0047712);
   - [Results and Data](http://robdunnlab.com/projects/belly-button-biodiversity/results-and-data/).
 
 # Author
