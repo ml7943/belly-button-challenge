@@ -23,9 +23,9 @@ The data is sourced from the following link: [samples.json](https://2u-data-curr
 
 # Technical Details
 
-- This dashboard utilizes D3.js and Plotly.js for data visualization.
-- Data is loaded and processed from a JSON file using JavaScript code.
-- Various charts and the gauge chart are created using Plotly.js.
+- This dashboard utilizes `D3.js` and `Plotly.js` for data visualization.
+- Data is loaded and processed from a JSON file using `JavaScript` code.
+- All charts are created using `Plotly.js`.
 
 # Author
 
