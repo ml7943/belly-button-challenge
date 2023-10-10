@@ -19,7 +19,7 @@ This is a dashboard for displaying belly button biodiversity data. It includes t
 
 # Data Source
 
-The data is sourced from the following link: `[samples.json](https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json)`.
+The data is sourced from the following link: [samples.json](https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json).
 
 # Technical Details
 
@@ -29,7 +29,7 @@ The data is sourced from the following link: `[samples.json](https://2u-data-cur
 
 # Author
 
-- Author: Mu Li
+- Author: `Mu Li`
 - Create date: Oct 10, 2023
 
 For any questions or feedback, please contact the author: ml7943@nyu.edu.
