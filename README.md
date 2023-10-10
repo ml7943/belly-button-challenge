@@ -27,6 +27,9 @@ The data is sourced from the following link: [samples.json](https://2u-data-curr
 - Data is loaded and processed from a JSON file using `JavaScript` code.
 - All charts are created using `Plotly.js`.
 
+# References
+`Hulcr, J. et al. (2012) A Jungle` in There: Bacteria in Belly Buttons are Highly Diverse, but Predictable. Retrieved from: [http://robdunnlab.com/projects/belly-button-biodiversity/results-and-data/]
+
 # Author
 
 - Author: `Mu Li`
