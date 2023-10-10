@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Bellybutton Biodiversity</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 jumbotron text-center">
+        <h1>Belly Button Biodiversity Dashboard</h1>
+        <p>Use the interactive charts below to explore the dataset</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-2">
+        <div class="well">
+          <h5>Test Subject ID No.:</h5>
+          <select id="selDataset" onchange="optionChanged(this.value)"></select>
+        </div>
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">Demographic Info</h3>
+          </div>
+          <div id="sample-metadata" class="panel-body"></div>
+        </div>
+        <div id="gauge"></div> 
+      </div>
+      <div class="col-md-5">
+        <div id="bar"></div>
+      </div>
+      <div class="col-md-5">
+        <div id="bubble"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script>
+    // use d3 to load the json file
+    d3.json("https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json")
+      .then(function(data) {
+        // process the data
+        if (data) {
+          console.log(data);
+        } else {
+          console.log("Data is undefined or empty.");
+        }
+
+        // export the data
+        var names = data.names; // obtain the test subject IDs
+        var metadata = data.metadata; // obtain the metadata array
+        var samples = data.samples; // obtain the samples array
+
+        // create a dropdown menu
+        var dropdown = d3.select("#selDataset");
+        var options = dropdown.selectAll("option")
+          .data(names)
+          .enter()
+          .append("option")
+          .text(function(d) { return d; });
+
+        // choose the first option as the default
+        var selectedOption = names[0];
+        optionChanged(selectedOption);
+
+        // create the event listener for the dropdown menu
+        dropdown.on("change", function() {
+          selectedOption = d3.select(this).property("value");
+          optionChanged(selectedOption); 
+        });
+
+        // create the function to update the charts
+        function optionChanged(selectedOption) {
+          // according to the selected option, filter the samples array to obtain the data for the selected test subject
+          var filteredSample = samples.find(function(sample) {
+            return sample.id === selectedOption;
+          });
+
+          // check if the sample data is found for the selected option
+          if (!filteredSample) {
+            console.log("Sample data not found for selected option.");
+            return;
+          }
+
+          // extract the data for the bar chart
+          var top10SampleValues = filteredSample.sample_values.slice(0, 10).reverse();
+          var top10OtuIds = filteredSample.otu_ids.slice(0, 10).reverse();
+          var top10OtuLabels = filteredSample.otu_labels.slice(0, 10).reverse();
+
+          // create bar chart
+          var trace1 = {
+            type: 'bar',
+            x: top10SampleValues,
+            y: top10OtuIds.map(id => `OTU ${id}`),
+            text: top10OtuLabels,
+            orientation: 'h'
+          };
+
+          var data1 = [trace1];
+
+          var layout1 = {
+            title: 'Top 10 OTUs Found',
+            xaxis: { title: 'Sample Values' },
+            yaxis: { title: 'OTU ID' }
+          };
+
+          Plotly.newPlot('bar', data1, layout1);
+
+          // extract the data for the bubble chart
+          var otuIds = filteredSample.otu_ids;
+          var sampleValues = filteredSample.sample_values;
+          var otuLabels = filteredSample.otu_labels;
+
+          // create bubble chart
+          var trace2 = {
+            x: otuIds,
+            y: sampleValues,
+            text: otuLabels,
+            mode: 'markers',
+            marker: {
+              size: sampleValues,
+              color: otuIds,
+              colorscale: 'Earth',
+              opacity: 0.5
+            }
+          };
+
+          var data2 = [trace2];
+
+          var layout2 = {
+            title: 'Bubble Chart for Samples',
+            xaxis: { title: 'OTU ID' },
+            yaxis: { title: 'Sample Values' },
+            showlegend: false
+          };
+
+          Plotly.newPlot('bubble', data2, layout2);
+
+          // update the demographic info panel
+          var metadataPanel = d3.select("#sample-metadata");
+          metadataPanel.html(""); // clean the panel
+
+          // obtain the metadata for the selected test subject
+          var selectedMetadata = metadata.find(function(item) {
+            return item.id === parseInt(selectedOption); // convert the id to integer
+          });
+
+          // put the metadata into the panel
+          Object.entries(selectedMetadata).forEach(([key, value]) => {
+            console.log(`${key}: ${value}`);
+            metadataPanel.append("p").text(`${key}: ${value}`);
+          });
+
+          // create the gauge chart
+          var gaugeValue = selectedMetadata.wfreq; // obtain the washing frequency
+          updateGauge(gaugeValue);
+        }
+
+        // create the function to update the gauge chart
+        function updateGauge(gaugeValue) {
+        var data = [
+            {
+            type: "indicator",
+            mode: "gauge+number",
+            value: gaugeValue,
+            title: { text: "Weekly Washing Frequency", font: { size: 18 } },
+            gauge: {
+                axis: { range: [null, 9], tickvals: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] },
+                bar: { color: "darkblue" },
+                steps: [
+                { range: [0, 1], color: "rgb(248, 243, 236)" },
+                { range: [1, 2], color: "rgb(244, 241, 229)" },
+                { range: [2, 3], color: "rgb(233, 230, 202)" },
+                { range: [3, 4], color: "rgb(229, 231, 179)" },
+                { range: [4, 5], color: "rgb(213, 228, 157)" },
+                { range: [5, 6], color: "rgb(183, 204, 146)" },
+                { range: [6, 7], color: "rgb(140, 191, 136)" },
+                { range: [7, 8], color: "rgb(138, 187, 143)" },
+                { range: [8, 9], color: "rgb(133, 180, 138)" },
+                ],
+                // add the red threshold line
+                threshold: {
+                line: { color: "red", width: 4 },
+                thickness: 0.75,
+                value: gaugeValue,
+                },
+            },
+            },
+        ];
+
+        var layout = { width: 400, height: 300, margin: { t: 0, b: 0 } };
+
+        Plotly.newPlot('gauge', data, layout);
+        }
+
+
+      })
+      .catch(function(error) {
+        console.log("Error loading data: " + error);
+      });
+  </script>
+
+</body>
+
+</html>
